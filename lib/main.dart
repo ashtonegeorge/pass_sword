@@ -51,6 +51,15 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
 
+  get passwordArray => null;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  Image appIcon = Image.asset('assets/images/img.png');
+
   final List<Map<String, String>> passwordArray =
   [
     {
@@ -75,23 +84,75 @@ class MyHomePage extends StatefulWidget {
     },
   ];
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  Image appIcon = Image.asset('assets/images/img.png');
-
-  // void _incrementCounter() {
-  //   setState(() {
-  //     // This call to setState tells the Flutter framework that something has
-  //     // changed in this State, which causes it to rerun the build method below
-  //     // so that the display can reflect the updated values. If we changed
-  //     // _counter without calling setState(), then the build method would not be
-  //     // called again, and so nothing would appear to happen.
-  //     _counter++;
-  //   });
-  // }
+  void _createRecord() {
+    String newTitle = '';
+    String newUsername = '';
+    String newPassword = '';
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                  labelText: 'Title',
+                ),
+                  onChanged: (value) {
+                    newTitle = value;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField (
+                    decoration:  const InputDecoration(
+                    labelText: 'Username',
+                  ),
+                  onChanged: (value) {
+                    newUsername = value;
+                  },
+                )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField (
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  ),
+                  onChanged: (value) {
+                    newPassword = value;
+                  },
+                )
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 32.0),
+                child: ElevatedButton(
+                  child: const Text('Add Record'),
+                  onPressed: () {
+                    setState(() {
+                      // Add the new record to passwordArray
+                      passwordArray.add({
+                        'title': newTitle,
+                        'username': newUsername,
+                        'password': newPassword
+                      });
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
           DataColumn(label: Text('Username', style: TextStyle(fontSize: 12.0))),
           DataColumn(label: Text('Copy', style: TextStyle(fontSize: 12.0))),
         ],
-        rows: widget.passwordArray.map((record) {
+        rows: passwordArray.map((record) {
           return DataRow(
             cells: [
               DataCell(
@@ -148,11 +209,11 @@ class _MyHomePageState extends State<MyHomePage> {
         }).toList(),
         )
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createRecord,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
